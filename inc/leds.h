@@ -38,7 +38,8 @@ extern "C" {
 
 /* === Public macros definitions =============================================================== */
 
-#define LED_ERROR 255 /** Invalid LED **/
+#define LED_INVALID 255 /** Invalid LED **/
+#define LED_SUCCESS 0   /** **/
 
 /* === Public data type declarations =========================================================== */
 
@@ -58,19 +59,23 @@ void leds_init(uint16_t * puerto);
  * @brief turn on the led
  *
  * @param led number of led to turn on (1 to 16)
+ * @return int8_t return LED_SUCCESS if the led is off
+ *                       LED_INVALID if the led parameter is invalid
  */
-void leds_turn_on(uint8_t led);
+int8_t leds_turn_on(uint8_t led);
 /**
  * @brief turn off the led
  *
  * @param led number of led to turn off (1 to 16)
+ * @return int8_t return LED_SUCCESS if the led is off
+ *                       LED_INVALID if the led parameter is invalid
  */
-void leds_turn_off(uint8_t led);
+int8_t leds_turn_off(uint8_t led);
 /**
  * @brief State of led
  *
  * @param led number of led
- * @return uint8_t return 1 if the led is on
+ * @return int8_t return 1 if the led is on
  *                        0 if the led is off
  *                        LED_ERROR if the led parameter is invalid
  */
@@ -79,9 +84,9 @@ int8_t leds_is_on(uint8_t led);
  * @brief State of led
  *
  * @param led number of led
- * @return uint8_t return 1 if the led is off
- *                        0 if the led is on
- *                        LED_ERROR if the led parameter is invalid
+ * @return int8_t return 1 if the led is off
+ *                       0 if the led is on
+ *                       LED_ERROR if the led parameter is invalid
  */
 int8_t leds_is_off(uint8_t led);
 /**

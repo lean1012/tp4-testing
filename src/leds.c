@@ -63,6 +63,20 @@ static uint16_t right_shift(uint16_t value_to_shift, uint16_t num) {
     return value_to_shift >> num;
 }
 
+/**
+ * @brief returns the bit of a position.
+ * Example: if the number is 00001010 and the selected bit is 2, the function returns 0.
+ * If the selected bit is 1, the function returns 1.
+ *
+ * @param number number which want to select a bit
+
+ * @param sel_bit number of bit
+ * @return uint8_t value of bit position
+ */
+static uint8_t select_bit(uint16_t number, uint16_t sel_bit) {
+    return right_shift(number & led_to_mask(sel_bit), sel_bit - LED_OFFSET);
+}
+
 /* === Public variable definitions ============================================================= */
 
 /* === Private variable definitions ============================================================ */
@@ -76,21 +90,29 @@ void leds_init(uint16_t * puerto) {
     *puntero = ALL_LEDS_OFF;
 }
 
-void leds_turn_on(uint8_t led) {
-    if (LED_VALID(led))
+int8_t leds_turn_on(uint8_t led) {
+    if (LED_VALID(led)) {
         *puntero |= led_to_mask(led);
+        return LED_SUCCESS;
+    } else {
+        return LED_INVALID;
+    }
 }
 
-void leds_turn_off(uint8_t led) {
-    if (LED_VALID(led))
+int8_t leds_turn_off(uint8_t led) {
+    if (LED_VALID(led)) {
         *puntero &= ~led_to_mask(led);
+        return LED_SUCCESS;
+    } else {
+        return LED_INVALID;
+    }
 }
 
 int8_t leds_is_on(uint8_t led) {
     if (!LED_VALID(led)) {
-        return LED_ERROR;
+        return LED_INVALID;
     } else {
-        if (1 == right_shift(*puntero & led_to_mask(led), led - LED_OFFSET))
+        if (1 == select_bit(*puntero, led))
             return 1;
         else
             return 0;
@@ -99,9 +121,9 @@ int8_t leds_is_on(uint8_t led) {
 
 int8_t leds_is_off(uint8_t led) {
     if (!LED_VALID(led)) {
-        return LED_ERROR;
+        return LED_INVALID;
     } else {
-        if (0 == right_shift(*puntero & led_to_mask(led), led - LED_OFFSET))
+        if (0 == select_bit(*puntero, led))
             return 1;
         else
             return 0;
